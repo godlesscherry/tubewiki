@@ -1,0 +1,25 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+
+# Local config / secrets
+.env
+
+# Forge's knowledge base: your personal documents and extracted frames.
+# Keep the folder (and this rule) so the app has somewhere to write after a clone.
+forge-wiki/*
+!forge-wiki/.gitkeep
+
+# OS
+.DS_Store
+
+# TypeScript build info
+frontend/tsconfig.tsbuildinfo

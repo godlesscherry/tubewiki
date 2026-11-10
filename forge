@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Forge launcher: ./forge api | dev | build | open | status
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PY="$ROOT/.venv/bin/python"
+PORT="${FORGE_PORT:-8787}"
+CMD="${1:-open}"
+[[ $# -gt 0 ]] && shift || true
+
+build_if_needed() {
+  if [[ ! -f "$ROOT/frontend/dist/index.html" ]]; then
+    echo "→ building frontend…"
+    (cd "$ROOT/frontend" && npm run build)
+  fi
+}
+
+case "$CMD" in
+  api)
+    exec "$PY" -m uvicorn backend.app.main:app --host 127.0.0.1 --port "$PORT" --reload --app-dir "$ROOT"
+    ;;
+  dev)
+    build_if_needed
+    "$PY" -m uvicorn backend.app.main:app --host 127.0.0.1 --port "$PORT" --reload --app-dir "$ROOT" &
+    API_PID=$!
+    trap 'kill $API_PID 2>/dev/null || true' EXIT INT TERM
+    (cd "$ROOT/frontend" && npm run dev)
+    ;;
+  build)
+    (cd "$ROOT/frontend" && npm run build)
+    ;;
+  open)
+    build_if_needed
+    "$PY" -m uvicorn backend.app.main:app --host 127.0.0.1 --port "$PORT" --app-dir "$ROOT" &
+    API_PID=$!
+    sleep 1.2
+    open "http://127.0.0.1:$PORT" 2>/dev/null || echo "open http://127.0.0.1:$PORT"
+    echo "Forge running at http://127.0.0.1:$PORT  (Ctrl-C to stop)"
+    trap 'kill $API_PID 2>/dev/null || true' EXIT INT TERM
+    wait $API_PID
+    ;;
+  status)
+    curl -s "http://127.0.0.1:$PORT/api/health" || echo "API not running"
+    ;;
+  *)
+    echo "usage: ./forge {api|dev|build|open|status}"
+    exit 1
+    ;;
+esac
