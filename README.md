@@ -16,10 +16,27 @@ YouTube links ──▶ extractor ──▶ forge-wiki/
 
 ## Quick start
 
+Fresh clone:
+
 ```bash
-cd ~/Playground/forge
+git clone https://github.com/godlesscherry/forge.git
+cd forge
+uv venv --python 3.12 .venv
+uv pip install -r backend/requirements.txt
+(cd frontend && npm install)
 ./forge open          # builds the UI if needed, serves http://127.0.0.1:8787
 ```
+
+Already set up:
+
+```bash
+cd ~/Playground/forge
+./forge open
+```
+
+> `forge-wiki/` is git-ignored on purpose: it holds your personal documents and
+> extracted frames. The folder itself (`.gitkeep`) is tracked so the app has
+> somewhere to write after a clone.
 
 Paste up to 10 YouTube URLs, press **Extract documents**, then open
 `forge-wiki/` — one markdown file per video with an overview, chapters, inline
