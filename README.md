@@ -121,7 +121,7 @@ start the server again to rebuild it.
 - Duplicate links are skipped unless you tick **Re-extract already saved**.
 - Deleting a source removes its metadata row only; the markdown file is left on
   disk (the documents are yours).
-- Use `q` on the Library view to filter the list — it is table filtering, not a
+- Use `q` on the History view to filter the list — it is table filtering, not a
   document search feature.
 
 ## Roadmap

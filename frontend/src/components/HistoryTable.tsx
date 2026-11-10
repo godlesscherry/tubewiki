@@ -35,7 +35,7 @@ function transcriptClass(source: string | null): string {
   return ''
 }
 
-export default function LibraryTable({
+export default function HistoryTable({
   videos,
   loading,
   filtering,
@@ -69,14 +69,14 @@ export default function LibraryTable({
   const globalEmpty = noResults && !filteredView && totalDocs === 0
 
   return (
-    <section className="library" aria-labelledby="library-title">
-      <div className="library-head">
-        <div className="library-title">
-          <h2 id="library-title">Library</h2>
+    <section className="history" aria-labelledby="history-title">
+      <div className="history-head">
+        <div className="history-title">
+          <h2 id="history-title">History</h2>
           <span className="count-badge">{videos.length}</span>
-          {totalDocs > videos.length ? <span className="library-total">of {totalDocs}</span> : null}
+          {totalDocs > videos.length ? <span className="history-total">of {totalDocs}</span> : null}
         </div>
-        <div className="library-tools">
+        <div className="history-tools">
           <div className={`filter${query ? ' has-value' : ''}`}>
             <IconSearch size={14} className="filter-icon" />
             <input
@@ -105,8 +105,8 @@ export default function LibraryTable({
             className="icon-btn"
             onClick={onRetry}
             disabled={loading || filtering}
-            title="Refresh library"
-            aria-label="Refresh library"
+            title="Refresh history"
+            aria-label="Refresh history"
           >
             <IconRefresh size={15} />
           </button>
@@ -157,7 +157,7 @@ export default function LibraryTable({
       ) : (
         <div className="card table-card">
           <div className="table-wrap">
-            <table className="library-table">
+            <table className="history-table">
               <thead>
                 <tr>
                   <th className="col-thumb" scope="col">
@@ -282,7 +282,7 @@ export default function LibraryTable({
                           onClick={() => onDelete(video)}
                           disabled={deletingId === video.video_id}
                           aria-label={`Delete ${title}`}
-                          title="Delete from library"
+                          title="Delete from history"
                         >
                           {deletingId === video.video_id ? <Spinner size={13} /> : <IconTrash size={14} />}
                         </button>

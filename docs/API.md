@@ -23,7 +23,7 @@ tubewiki/
 │   ├── llm.py             optional OpenAI-compatible client
 │   ├── routers/
 │   │   ├── ingest.py      POST /api/ingest, jobs
-│   │   └── sources.py     library, dedupe, delete
+│   │   └── sources.py     history, dedupe, delete
 │   └── ingest/
 │       ├── pipeline.py    run_ingest_job(job_id, urls)
 │       ├── youtube.py     metadata, captions
@@ -53,7 +53,7 @@ tubewiki/
   - `JobOut = {id, kind, status, total, done, current, error, created, updated}`
   - status: `queued | running | done | error`
 
-### Sources (library)
+### History (extracted sources)
 - `GET /api/sources?q=&status=` → `{videos: VideoOut[], channels: ChannelOut[], total}`
   - `VideoOut`: `video_id, url, title, channel, channel_id, duration, published,
     thumbnail, wiki_path, transcript_source, frame_count, words, reading_minutes,

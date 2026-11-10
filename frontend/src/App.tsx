@@ -3,7 +3,7 @@ import { api } from './api'
 import type { ConfigOut, IngestResponse, JobOut, SourcesOut, VideoOut } from './types'
 import IngestCard from './components/IngestCard'
 import JobCard from './components/JobCard'
-import LibraryTable from './components/LibraryTable'
+import HistoryTable from './components/HistoryTable'
 import { IconBrand, IconFile, IconFolder, IconSparkle } from './components/icons'
 import { ErrorBanner, ToastView, errMsg, parseUrls, type ToastData } from './components/ui'
 
@@ -102,7 +102,7 @@ export default function App() {
     }
   }, [loadConfig])
 
-  // Debounced library filter (~250 ms), then fetch via the q param.
+  // Debounced history filter (~250 ms), then fetch via the q param.
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedQuery(query.trim()), 250)
     return () => window.clearTimeout(timer)
@@ -234,13 +234,13 @@ export default function App() {
   const handleDelete = async (video: VideoOut) => {
     const label = video.title ?? video.video_id
     const confirmed = window.confirm(
-      `Delete “${label}” from the library?\n\nThe markdown document in vault/ is left on disk.`,
+      `Delete “${label}” from the history?\n\nThe markdown document in vault/ is left on disk.`,
     )
     if (!confirmed) return
     setDeletingId(video.video_id)
     try {
       await api.deleteSource(video.video_id)
-      setToast({ kind: 'ok', message: `Deleted “${label}” from the library` })
+      setToast({ kind: 'ok', message: `Deleted “${label}” from the history` })
       void loadConfig()
       setSourcesRefresh((n) => n + 1)
     } catch (e) {
@@ -295,7 +295,7 @@ export default function App() {
               <span className="chip-dot" />
               {llmLabel}
             </span>
-            <span className="chip chip--count" title={`${docCount} document${docCount === 1 ? '' : 's'} in the library`}>
+            <span className="chip chip--count" title={`${docCount} document${docCount === 1 ? '' : 's'} in the history`}>
               <IconFile size={12} />
               <b>{docCount}</b>
               <span className="chip-label">doc{docCount === 1 ? '' : 's'}</span>
@@ -327,7 +327,7 @@ export default function App() {
 
         <JobCard jobs={activeJobs} />
 
-        <LibraryTable
+        <HistoryTable
           videos={sources?.videos ?? []}
           loading={sources === null && sourcesLoading}
           filtering={sourcesLoading && sources !== null}

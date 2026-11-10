@@ -1,4 +1,4 @@
-"""Source library: every extracted document, channels, dedupe checks."""
+"""Extraction history: every extracted document, channels, dedupe checks."""
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
