@@ -1,4 +1,4 @@
-"""Forge configuration: paths, ports, optional LLM settings."""
+"""TubeWiki configuration: paths, ports, optional LLM settings."""
 from __future__ import annotations
 
 import os
@@ -8,29 +8,29 @@ APP_DIR = Path(__file__).resolve().parent
 BACKEND_DIR = APP_DIR.parent
 ROOT = BACKEND_DIR.parent
 
-WIKI_DIR = Path(os.environ.get("FORGE_WIKI") or (ROOT / "forge-wiki")).resolve()
-DB_DIR = WIKI_DIR / ".forge"
-DB_PATH = Path(os.environ.get("FORGE_DB") or (DB_DIR / "forge.db"))
+WIKI_DIR = Path(os.environ.get("TUBEWIKI_WIKI") or (ROOT / "vault")).resolve()
+DB_DIR = WIKI_DIR / ".tubewiki"
+DB_PATH = Path(os.environ.get("TUBEWIKI_DB") or (DB_DIR / "tubewiki.db"))
 ASSETS_DIR = WIKI_DIR / "assets"
 FRONTEND_DIST = ROOT / "frontend" / "dist"
 
-HOST = os.environ.get("FORGE_HOST", "127.0.0.1")
-PORT = int(os.environ.get("FORGE_PORT", "8787"))
+HOST = os.environ.get("TUBEWIKI_HOST", "127.0.0.1")
+PORT = int(os.environ.get("TUBEWIKI_PORT", "8787"))
 VERSION = "1.0.0"
 
 # Optional OpenAI-compatible LLM. Everything works without it.
-LLM_API_KEY = os.environ.get("OPENAI_API_KEY", "") or os.environ.get("FORGE_LLM_API_KEY", "")
+LLM_API_KEY = os.environ.get("OPENAI_API_KEY", "") or os.environ.get("TUBEWIKI_LLM_API_KEY", "")
 LLM_BASE_URL = (
     os.environ.get("OPENAI_BASE_URL", "")
-    or os.environ.get("FORGE_LLM_BASE_URL", "")
+    or os.environ.get("TUBEWIKI_LLM_BASE_URL", "")
     or "https://api.openai.com/v1"
 ).rstrip("/")
 LLM_MODEL = (
-    os.environ.get("FORGE_LLM_MODEL", "")
+    os.environ.get("TUBEWIKI_LLM_MODEL", "")
     or os.environ.get("OPENAI_MODEL", "")
     or "gpt-4o-mini"
 )
-LLM_VISION_MODEL = os.environ.get("FORGE_VISION_MODEL") or LLM_MODEL
+LLM_VISION_MODEL = os.environ.get("TUBEWIKI_VISION_MODEL") or LLM_MODEL
 
 
 def load_dotenv() -> None:
@@ -55,18 +55,18 @@ def load_dotenv() -> None:
 def refresh_llm() -> None:
     """Re-read LLM settings from env (after load_dotenv)."""
     global LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, LLM_VISION_MODEL
-    LLM_API_KEY = os.environ.get("OPENAI_API_KEY", "") or os.environ.get("FORGE_LLM_API_KEY", "")
+    LLM_API_KEY = os.environ.get("OPENAI_API_KEY", "") or os.environ.get("TUBEWIKI_LLM_API_KEY", "")
     LLM_BASE_URL = (
         os.environ.get("OPENAI_BASE_URL", "")
-        or os.environ.get("FORGE_LLM_BASE_URL", "")
+        or os.environ.get("TUBEWIKI_LLM_BASE_URL", "")
         or "https://api.openai.com/v1"
     ).rstrip("/")
     LLM_MODEL = (
-        os.environ.get("FORGE_LLM_MODEL", "")
+        os.environ.get("TUBEWIKI_LLM_MODEL", "")
         or os.environ.get("OPENAI_MODEL", "")
         or "gpt-4o-mini"
     )
-    LLM_VISION_MODEL = os.environ.get("FORGE_VISION_MODEL") or LLM_MODEL
+    LLM_VISION_MODEL = os.environ.get("TUBEWIKI_VISION_MODEL") or LLM_MODEL
 
 
 def llm_available() -> bool:

@@ -1,4 +1,4 @@
-# Forge — YouTube → detailed markdown documents
+# TubeWiki — YouTube → detailed markdown documents
 
 Paste one or more YouTube links and get a **structured, illustrated markdown
 document** written into a folder you own. No categories, no browser, no search —
@@ -6,40 +6,40 @@ just extraction. (A document browser can be added later; the output is plain
 markdown, so Obsidian/any editor works today.)
 
 ```
-YouTube links ──▶ extractor ──▶ forge-wiki/
+YouTube links ──▶ extractor ──▶ vault/
                                  ├── <video-title>.md
                                  ├── assets/<video_id>/<timestamp>.jpg
-                                 └── .forge/forge.db   (derived metadata)
+                                 └── .tubewiki/tubewiki.db   (derived metadata)
 ```
 
-![Forge UI](docs/screenshot.png)
+![TubeWiki UI](docs/screenshot.png)
 
 ## Quick start
 
 Fresh clone:
 
 ```bash
-git clone https://github.com/godlesscherry/forge.git
-cd forge
+git clone https://github.com/godlesscherry/tubewiki.git
+cd tubewiki
 uv venv --python 3.12 .venv
 uv pip install -r backend/requirements.txt
 (cd frontend && npm install)
-./forge open          # builds the UI if needed, serves http://127.0.0.1:8787
+./tubewiki open          # builds the UI if needed, serves http://127.0.0.1:8787
 ```
 
 Already set up:
 
 ```bash
-cd ~/Playground/forge
-./forge open
+cd ~/Playground/tubewiki
+./tubewiki open
 ```
 
-> `forge-wiki/` is git-ignored on purpose: it holds your personal documents and
+> `vault/` is git-ignored on purpose: it holds your personal documents and
 > extracted frames. The folder itself (`.gitkeep`) is tracked so the app has
 > somewhere to write after a clone.
 
 Paste up to 10 YouTube URLs, press **Extract documents**, then open
-`forge-wiki/` — one markdown file per video with an overview, chapters, inline
+`vault/` — one markdown file per video with an overview, chapters, inline
 slide frames, quotes and takeaways.
 
 Optional LLM (rewrites the transcript into polished article prose instead of the
@@ -50,21 +50,21 @@ cp .env.example .env   # add OPENAI_API_KEY / OPENAI_BASE_URL / OPENAI_MODEL
 ```
 
 Works with local models too: point `OPENAI_BASE_URL` at Ollama
-(`http://localhost:11434/v1`) and set `FORGE_LLM_MODEL=llama3.1:8b`.
+(`http://localhost:11434/v1`) and set `TUBEWIKI_LLM_MODEL=llama3.1:8b`.
 
 ## Commands
 
 | Command | What it does |
 | --- | --- |
-| `./forge open` | Build UI if needed + serve app at `http://127.0.0.1:8787` |
-| `./forge api` | Backend only, reload mode (`:8787`) |
-| `./forge dev` | Backend + Vite dev server (`:5173`) |
-| `./forge build` | Build the React UI into `frontend/dist` |
-| `./forge status` | Hit `/api/health` |
+| `./tubewiki open` | Build UI if needed + serve app at `http://127.0.0.1:8787` |
+| `./tubewiki api` | Backend only, reload mode (`:8787`) |
+| `./tubewiki dev` | Backend + Vite dev server (`:5173`) |
+| `./tubewiki build` | Build the React UI into `frontend/dist` |
+| `./tubewiki status` | Hit `/api/health` |
 
 ## What a document contains
 
-`forge-wiki/<slug>.md`:
+`vault/<slug>.md`:
 
 - YAML frontmatter: title, source URL, video id, channel, published/extracted
   dates, transcript source, frame count, `document` mode, `words`, `reading_minutes`
@@ -74,7 +74,7 @@ Works with local models too: point `OPENAI_BASE_URL` at Ollama
   frames inlined, pull quotes and highlights
 - **Key takeaways** and the full **transcript** appendix
 
-Two document modes, selected with `FORGE_DOC_MODE=auto|extractive|llm`:
+Two document modes, selected with `TUBEWIKI_DOC_MODE=auto|extractive|llm`:
 offline extractive (default, no key) or LLM-written sections.
 
 ## Stack
@@ -83,7 +83,7 @@ offline extractive (default, no key) or LLM-written sections.
 | --- | --- | --- |
 | API | **FastAPI + Pydantic v2 + Uvicorn** (Python 3.12) | async background jobs, typed contracts |
 | Metadata | **SQLite (WAL)** | videos + jobs only; derived, deletable |
-| Content | **Markdown + frontmatter** in `forge-wiki/` | source of truth, readable, git-able |
+| Content | **Markdown + frontmatter** in `vault/` | source of truth, readable, git-able |
 | Extraction | **yt-dlp** (metadata/captions), **ffmpeg** (scene frames), **Pillow** (aHash dedupe) | local, free, battle-tested |
 | LLM (optional) | any **OpenAI-compatible** endpoint via httpx | document rewrite + vision captions |
 | UI | **React 19 + TypeScript + Vite**, hand-rolled CSS | minimal single-page dashboard |
@@ -104,16 +104,16 @@ OpenAPI docs at `http://127.0.0.1:8787/docs`; full contract in
 ## Layout
 
 ```
-forge/
-├── forge                 # launcher
+tubewiki/
+├── tubewiki                 # launcher
 ├── backend/app/          # FastAPI: db, schemas, llm, routers/, ingest/
 ├── frontend/             # React + Vite UI
-├── forge-wiki/           # generated documents + images  ← backup this
+├── vault/           # generated documents + images  ← backup this
 ├── docs/API.md
 └── .env.example
 ```
 
-The SQLite DB is derived from the markdown files; delete `forge-wiki/.forge/` and
+The SQLite DB is derived from the markdown files; delete `vault/.tubewiki/` and
 start the server again to rebuild it.
 
 ## Notes

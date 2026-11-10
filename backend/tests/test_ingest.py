@@ -24,11 +24,11 @@ VID_B = "aqz-KE-bpKQ"
 @pytest.fixture()
 def wiki(tmp_path, monkeypatch):
     """Point config at a throwaway wiki and disable the LLM."""
-    root = tmp_path / "forge-wiki"
+    root = tmp_path / "vault"
     monkeypatch.setattr(config, "WIKI_DIR", root)
     monkeypatch.setattr(config, "ASSETS_DIR", root / "assets")
-    monkeypatch.setattr(config, "DB_DIR", root / ".forge")
-    monkeypatch.setattr(config, "DB_PATH", root / ".forge" / "forge.db")
+    monkeypatch.setattr(config, "DB_DIR", root / ".tubewiki")
+    monkeypatch.setattr(config, "DB_PATH", root / ".tubewiki" / "tubewiki.db")
     monkeypatch.setattr(llm, "available", lambda: False)
     db.init_db()
     return root

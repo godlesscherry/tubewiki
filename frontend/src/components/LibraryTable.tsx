@@ -25,7 +25,7 @@ import {
 function savedPath(video: VideoOut): string | null {
   if (!video.wiki_path) return null
   const raw = video.wiki_path.replace(/^\/+/, '')
-  return raw.startsWith('forge-wiki/') ? raw : `forge-wiki/${raw}`
+  return raw.startsWith('vault/') ? raw : `vault/${raw}`
 }
 
 function transcriptClass(source: string | null): string {
@@ -138,8 +138,8 @@ export default function LibraryTable({
             }
           >
             <p>
-              Paste a YouTube link above and Forge writes a structured markdown document into{' '}
-              <code className="inline-code">forge-wiki/</code> — TL;DR, timestamped chapters with frames, key takeaways
+              Paste a YouTube link above and TubeWiki writes a structured markdown document into{' '}
+              <code className="inline-code">vault/</code> — TL;DR, timestamped chapters with frames, key takeaways
               and a transcript appendix.
             </p>
             <p className="empty-sub">Nothing to configure. No categories, no folders, no browsing — just documents.</p>

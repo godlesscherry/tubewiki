@@ -1,11 +1,11 @@
-# Forge — API contract (v2, lean)
+# TubeWiki — API contract (v2, lean)
 
-Forge is now deliberately small: **paste YouTube links → get detailed markdown
+TubeWiki is now deliberately small: **paste YouTube links → get detailed markdown
 documents saved to one flat folder.** No categories, no browsing UI, no search.
 
 ```
-YouTube links ──▶ extractor ──▶ forge-wiki/<slug>.md
-                                 forge-wiki/assets/<video_id>/*.jpg
+YouTube links ──▶ extractor ──▶ vault/<slug>.md
+                                 vault/assets/<video_id>/*.jpg
 ```
 
 Backend: FastAPI on `127.0.0.1:8787`. Frontend: React + Vite (proxied in dev,
@@ -14,7 +14,7 @@ served by FastAPI from `frontend/dist` in production).
 ## Layout
 
 ```
-forge/
+tubewiki/
 ├── backend/app/
 │   ├── main.py            app, SPA serving
 │   ├── config.py          paths, env, LLM settings
@@ -31,10 +31,10 @@ forge/
 │       ├── document.py    detailed document builder
 │       └── writer.py      page writer → WIKI_DIR/<slug>.md
 ├── frontend/src/          React UI
-├── forge-wiki/            flat document folder (source of truth)
+├── vault/            flat document folder (source of truth)
 │   ├── <slug>.md
 │   ├── assets/<video_id>/*.jpg
-│   └── .forge/forge.db    derived metadata (deletable)
+│   └── .tubewiki/tubewiki.db    derived metadata (deletable)
 └── docs/API.md
 ```
 
@@ -63,7 +63,7 @@ forge/
 
 ## Output
 
-Every document is written to `forge-wiki/<slug>.md` (flat). Frontmatter:
+Every document is written to `vault/<slug>.md` (flat). Frontmatter:
 
 ```yaml
 title, source_type, source_url, video_id, channel, published, extracted,

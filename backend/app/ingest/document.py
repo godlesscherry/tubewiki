@@ -14,7 +14,7 @@ Two modes:
   rewritten in chunks into polished article sections, then an executive overview
   and takeaways are generated. Falls back to the extractive path on any failure.
 
-Selection: ``FORGE_DOC_MODE=auto|extractive|llm`` (default ``auto``).
+Selection: ``TUBEWIKI_DOC_MODE=auto|extractive|llm`` (default ``auto``).
 """
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ _CHAPTER_HEADING_STOPWORDS = STOPWORDS | {"part", "section", "video", "actually"
 
 
 def doc_mode() -> str:
-    mode = (os.environ.get("FORGE_DOC_MODE") or "auto").strip().lower()
+    mode = (os.environ.get("TUBEWIKI_DOC_MODE") or "auto").strip().lower()
     return mode if mode in {"auto", "extractive", "llm"} else "auto"
 
 

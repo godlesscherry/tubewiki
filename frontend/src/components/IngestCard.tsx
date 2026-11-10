@@ -60,7 +60,7 @@ export default function IngestCard({
           <h2 id="ingest-title">Paste YouTube links</h2>
           <p>
             One per line, or separated by commas and spaces. Each video becomes a detailed markdown document in{' '}
-            <code className="inline-code">forge-wiki/</code>.
+            <code className="inline-code">vault/</code>.
           </p>
         </div>
         {urlCount > 0 ? (

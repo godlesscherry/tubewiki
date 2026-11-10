@@ -13,7 +13,7 @@ from . import config
 
 
 def available() -> bool:
-    if os.environ.get("OPENAI_API_KEY") or os.environ.get("FORGE_LLM_API_KEY"):
+    if os.environ.get("OPENAI_API_KEY") or os.environ.get("TUBEWIKI_LLM_API_KEY"):
         config.refresh_llm()
     return bool(config.LLM_API_KEY)
 

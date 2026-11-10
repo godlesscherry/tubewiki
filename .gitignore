@@ -13,10 +13,10 @@ frontend/dist/
 # Local config / secrets
 .env
 
-# Forge's knowledge base: your personal documents and extracted frames.
+# TubeWiki's knowledge base: your personal documents and extracted frames.
 # Keep the folder (and this rule) so the app has somewhere to write after a clone.
-forge-wiki/*
-!forge-wiki/.gitkeep
+vault/*
+!vault/.gitkeep
 
 # OS
 .DS_Store

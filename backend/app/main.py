@@ -1,6 +1,6 @@
-"""Forge — YouTube → detailed markdown documents (lean API).
+"""TubeWiki — YouTube → detailed markdown documents (lean API).
 
-Run:  ./forge api       (from the repo root)
+Run:  ./tubewiki api       (from the repo root)
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Forge", version=config.VERSION, lifespan=lifespan)
+app = FastAPI(title="TubeWiki", version=config.VERSION, lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,8 +67,8 @@ else:
     def dev_root() -> JSONResponse:
         return JSONResponse(
             {
-                "message": "Forge API is running. Frontend is not built yet.",
-                "next": "run `./forge dev` (Vite) or `./forge build` then reload",
+                "message": "TubeWiki API is running. Frontend is not built yet.",
+                "next": "run `./tubewiki dev` (Vite) or `./tubewiki build` then reload",
                 "docs": "/docs",
             }
         )

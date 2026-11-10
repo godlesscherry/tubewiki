@@ -2,7 +2,7 @@
 
 ``ingest/document.py`` builds the detailed document; this module formats it into
 the page layout (frontmatter → TL;DR → overview → chapters → takeaways →
-transcript) and writes it as ``forge-wiki/<slug>.md``.
+transcript) and writes it as ``vault/<slug>.md``.
 
 Everything is flat: there are no categories and no index. The markdown file is
 the permanent output; SQLite only tracks what was ingested.

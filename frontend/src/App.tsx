@@ -234,7 +234,7 @@ export default function App() {
   const handleDelete = async (video: VideoOut) => {
     const label = video.title ?? video.video_id
     const confirmed = window.confirm(
-      `Delete “${label}” from the library?\n\nThe markdown document in forge-wiki/ is left on disk.`,
+      `Delete “${label}” from the library?\n\nThe markdown document in vault/ is left on disk.`,
     )
     if (!confirmed) return
     setDeletingId(video.video_id)
@@ -266,7 +266,7 @@ export default function App() {
   const llmTone = configError ? 'offline' : !config ? 'loading' : config.llm ? 'on' : 'off'
   const llmLabel = configError ? 'API offline' : !config ? 'Connecting…' : config.llm ? 'LLM on' : 'No LLM'
   const llmTitle = configError
-    ? 'The Forge API is unreachable'
+    ? 'The TubeWiki API is unreachable'
     : config?.llm
       ? 'An LLM is configured — documents are synthesised and detailed'
       : 'No LLM key configured — documents are extractive (works fully offline)'
@@ -280,7 +280,7 @@ export default function App() {
               <IconBrand size={17} />
             </div>
             <div className="brand-copy">
-              <div className="brand-name">Forge</div>
+              <div className="brand-name">TubeWiki</div>
               <div className="brand-sub">YouTube → detailed markdown documents</div>
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function App() {
       <main className="page">
         {configError ? (
           <ErrorBanner
-            message={`Can't reach the Forge API — ${configError}. Is the backend running on 127.0.0.1:8787?`}
+            message={`Can't reach the TubeWiki API — ${configError}. Is the backend running on 127.0.0.1:8787?`}
             onRetry={retryAll}
           />
         ) : null}

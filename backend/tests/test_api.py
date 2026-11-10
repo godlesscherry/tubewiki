@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-TMP_WIKI = Path(tempfile.mkdtemp(prefix="forge-test-wiki-"))
-os.environ["FORGE_WIKI"] = str(TMP_WIKI)
+TMP_WIKI = Path(tempfile.mkdtemp(prefix="tubewiki-test-wiki-"))
+os.environ["TUBEWIKI_WIKI"] = str(TMP_WIKI)
 os.environ.pop("OPENAI_API_KEY", None)
 
 from fastapi.testclient import TestClient  # noqa: E402

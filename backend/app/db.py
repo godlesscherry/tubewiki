@@ -67,7 +67,7 @@ def today() -> str:
 
 
 def ensure_dirs() -> None:
-    for path in (config.WIKI_DIR, config.ASSETS_DIR, config.DB_DIR, config.WIKI_DIR / ".forge" / "tmp"):
+    for path in (config.WIKI_DIR, config.ASSETS_DIR, config.DB_DIR, config.WIKI_DIR / ".tubewiki" / "tmp"):
         path.mkdir(parents=True, exist_ok=True)
 
 

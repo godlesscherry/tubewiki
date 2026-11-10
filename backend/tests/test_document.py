@@ -13,11 +13,11 @@ from backend.app.ingest import document, writer
 
 @pytest.fixture()
 def wiki(tmp_path, monkeypatch):
-    root = tmp_path / "forge-wiki"
+    root = tmp_path / "vault"
     monkeypatch.setattr(config, "WIKI_DIR", root)
     monkeypatch.setattr(config, "ASSETS_DIR", root / "assets")
-    monkeypatch.setattr(config, "DB_DIR", root / ".forge")
-    monkeypatch.setattr(config, "DB_PATH", root / ".forge" / "forge.db")
+    monkeypatch.setattr(config, "DB_DIR", root / ".tubewiki")
+    monkeypatch.setattr(config, "DB_PATH", root / ".tubewiki" / "tubewiki.db")
     monkeypatch.setattr(llm, "available", lambda: False)
     monkeypatch.setattr(document, "doc_mode", lambda: "extractive")
     db.init_db()

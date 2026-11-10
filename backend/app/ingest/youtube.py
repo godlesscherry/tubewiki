@@ -7,7 +7,7 @@ Design goals:
 * ``fetch_transcript`` never raises: it returns ``([], "none")`` on any problem
   (no captions, network error, timeout, ...) so a video without captions still
   produces a wiki page from its description.
-* All temporary download state lives under ``<wiki>/.forge/tmp``.
+* All temporary download state lives under ``<wiki>/.tubewiki/tmp``.
 """
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ def canonical_url(video_id: str) -> str:
 
 
 def _tmp_dir() -> Path:
-    base = config.WIKI_DIR / ".forge" / "tmp"
+    base = config.WIKI_DIR / ".tubewiki" / "tmp"
     try:
         base.mkdir(parents=True, exist_ok=True)
     except OSError:

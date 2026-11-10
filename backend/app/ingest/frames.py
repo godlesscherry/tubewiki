@@ -123,7 +123,7 @@ def _ffmpeg() -> str:
 
 
 def _tmp_root() -> Path:
-    base = config.WIKI_DIR / ".forge" / "tmp"
+    base = config.WIKI_DIR / ".tubewiki" / "tmp"
     base.mkdir(parents=True, exist_ok=True)
     return base
 
