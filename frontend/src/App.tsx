@@ -4,8 +4,18 @@ import type { ConfigOut, IngestResponse, JobOut, SourcesOut, VideoOut } from './
 import IngestCard from './components/IngestCard'
 import JobCard from './components/JobCard'
 import HistoryTable from './components/HistoryTable'
-import { IconBrand, IconFile, IconFolder, IconSparkle } from './components/icons'
+import SettingsPage from './components/SettingsPage'
+import {
+  IconBrand,
+  IconChevronLeft,
+  IconFile,
+  IconFolder,
+  IconGear,
+  IconSparkle,
+} from './components/icons'
 import { ErrorBanner, ToastView, errMsg, parseUrls, type ToastData } from './components/ui'
+
+type View = 'main' | 'settings'
 
 const EXAMPLE_URL = 'https://www.youtube.com/watch?v=aircAruvnKk'
 const EMPTY_SOURCES: SourcesOut = { videos: [], channels: [], total: 0 }
@@ -46,6 +56,7 @@ export default function App() {
   const [activeJobs, setActiveJobs] = useState<JobOut[]>([])
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [toast, setToast] = useState<ToastData | null>(null)
+  const [view, setView] = useState<View>('main')
 
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const activeJobIdsRef = useRef<Set<string>>(new Set())
@@ -300,47 +311,64 @@ export default function App() {
               <b>{docCount}</b>
               <span className="chip-label">doc{docCount === 1 ? '' : 's'}</span>
             </span>
+            <button
+              type="button"
+              className={`settings-link${view === 'settings' ? ' is-active' : ''}`}
+              onClick={() => setView((current) => (current === 'settings' ? 'main' : 'settings'))}
+              aria-current={view === 'settings' ? 'page' : undefined}
+              aria-label={view === 'settings' ? 'Back to extraction' : 'Open settings'}
+              title={view === 'settings' ? 'Back to extraction' : 'Open settings'}
+            >
+              {view === 'settings' ? <IconChevronLeft size={15} /> : <IconGear size={15} />}
+              <span className="settings-link-label">{view === 'settings' ? 'Back' : 'Settings'}</span>
+            </button>
           </div>
         </div>
       </header>
 
       <main className="page">
-        {configError ? (
-          <ErrorBanner
-            message={`Can't reach the TubeWiki API — ${configError}. Is the backend running on 127.0.0.1:8787?`}
-            onRetry={retryAll}
-          />
-        ) : null}
+        {view === 'settings' ? (
+          <SettingsPage onBack={() => setView('main')} onSaved={() => void loadConfig()} />
+        ) : (
+          <>
+            {configError ? (
+              <ErrorBanner
+                message={`Can't reach the TubeWiki API — ${configError}. Is the backend running on 127.0.0.1:8787?`}
+                onRetry={retryAll}
+              />
+            ) : null}
 
-        <IngestCard
-          value={inputText}
-          onChange={setInputText}
-          urlCount={urls.length}
-          force={force}
-          onForceChange={setForce}
-          onExtract={() => void handleExtract()}
-          submitting={submitting}
-          result={ingestResult}
-          onDismissResult={() => setIngestResult(null)}
-          inputRef={inputRef}
-        />
+            <IngestCard
+              value={inputText}
+              onChange={setInputText}
+              urlCount={urls.length}
+              force={force}
+              onForceChange={setForce}
+              onExtract={() => void handleExtract()}
+              submitting={submitting}
+              result={ingestResult}
+              onDismissResult={() => setIngestResult(null)}
+              inputRef={inputRef}
+            />
 
-        <JobCard jobs={activeJobs} />
+            <JobCard jobs={activeJobs} />
 
-        <HistoryTable
-          videos={sources?.videos ?? []}
-          loading={sources === null && sourcesLoading}
-          filtering={sourcesLoading && sources !== null}
-          error={sourcesError}
-          onRetry={retryAll}
-          query={query}
-          onQueryChange={setQuery}
-          onDelete={(video) => void handleDelete(video)}
-          deletingId={deletingId}
-          totalDocs={docCount}
-          exampleUrl={EXAMPLE_URL}
-          onUseExample={useExample}
-        />
+            <HistoryTable
+              videos={sources?.videos ?? []}
+              loading={sources === null && sourcesLoading}
+              filtering={sourcesLoading && sources !== null}
+              error={sourcesError}
+              onRetry={retryAll}
+              query={query}
+              onQueryChange={setQuery}
+              onDelete={(video) => void handleDelete(video)}
+              deletingId={deletingId}
+              totalDocs={docCount}
+              exampleUrl={EXAMPLE_URL}
+              onUseExample={useExample}
+            />
+          </>
+        )}
 
         <footer className="site-footer">
           <span className="footer-note">

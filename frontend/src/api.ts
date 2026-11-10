@@ -1,6 +1,9 @@
 // Typed API client (v2 lean API). Same-origin paths are proxied by Vite or served by FastAPI.
 import type {
   ConfigOut,
+  SettingsOut,
+  SettingsUpdate,
+  TestLLMOut,
   DedupeOut,
   IngestResponse,
   JobOut,
@@ -60,4 +63,12 @@ export const api = {
     request<{ deleted: boolean }>(`/api/sources/${encodeURIComponent(videoId)}`, {
       method: 'DELETE',
     }),
+
+  settings: () => request<SettingsOut>('/api/settings'),
+  updateSettings: (payload: SettingsUpdate) =>
+    request<SettingsOut>('/api/settings', {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
+  testLLM: () => request<TestLLMOut>('/api/settings/test-llm', { method: 'POST' }),
 }

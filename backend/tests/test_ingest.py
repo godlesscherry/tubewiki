@@ -27,8 +27,9 @@ def wiki(tmp_path, monkeypatch):
     root = tmp_path / "vault"
     monkeypatch.setattr(config, "WIKI_DIR", root)
     monkeypatch.setattr(config, "ASSETS_DIR", root / "assets")
-    monkeypatch.setattr(config, "DB_DIR", root / ".tubewiki")
-    monkeypatch.setattr(config, "DB_PATH", root / ".tubewiki" / "tubewiki.db")
+    monkeypatch.setattr(config, "DATA_DIR", root / "data")
+    monkeypatch.setattr(config, "DB_PATH", root / "data" / "tubewiki.db")
+    monkeypatch.setattr(config, "TMP_DIR", root / "data" / "tmp")
     monkeypatch.setattr(llm, "available", lambda: False)
     db.init_db()
     return root

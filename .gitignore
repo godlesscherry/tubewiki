@@ -12,11 +12,15 @@ frontend/dist/
 
 # Local config / secrets
 .env
+settings.json
 
 # TubeWiki's knowledge base: your personal documents and extracted frames.
 # Keep the folder (and this rule) so the app has somewhere to write after a clone.
 vault/*
 !vault/.gitkeep
+
+# App-level data (SQLite history, temp downloads)
+data/
 
 # OS
 .DS_Store

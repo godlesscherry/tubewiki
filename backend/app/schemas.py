@@ -1,6 +1,8 @@
 """Pydantic request/response models."""
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -70,3 +72,16 @@ class ConfigOut(BaseModel):
     llm: bool
     wiki_root: str
     videos: int
+
+
+class LLMSettingsUpdate(BaseModel):
+    api_key: str | None = None
+    base_url: str | None = None
+    model: str | None = None
+    vision_model: str | None = None
+    doc_mode: Literal["auto", "extractive", "llm"] | None = None
+
+
+class SettingsUpdate(BaseModel):
+    llm: LLMSettingsUpdate | None = None
+    output_dir: str | None = None

@@ -21,12 +21,11 @@ from __future__ import annotations
 import asyncio
 import logging
 import math
-import os
 import re
 from collections import Counter
 from typing import Any
 
-from .. import llm
+from .. import config, llm
 
 log = logging.getLogger(__name__)
 
@@ -86,8 +85,7 @@ _CHAPTER_HEADING_STOPWORDS = STOPWORDS | {"part", "section", "video", "actually"
 
 
 def doc_mode() -> str:
-    mode = (os.environ.get("TUBEWIKI_DOC_MODE") or "auto").strip().lower()
-    return mode if mode in {"auto", "extractive", "llm"} else "auto"
+    return config.DOC_MODE
 
 
 # ---------------------------------------------------------------------------

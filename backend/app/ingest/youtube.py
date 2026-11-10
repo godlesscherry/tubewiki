@@ -96,7 +96,7 @@ def canonical_url(video_id: str) -> str:
 
 
 def _tmp_dir() -> Path:
-    base = config.WIKI_DIR / ".tubewiki" / "tmp"
+    base = config.TMP_DIR
     try:
         base.mkdir(parents=True, exist_ok=True)
     except OSError:

@@ -12,8 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config, db
-from .routers import ingest, sources
+from . import config, db, settings
+from .routers import ingest, settings as settings_router, sources
 
 STARTED_AT = time.time()
 
@@ -21,7 +21,9 @@ STARTED_AT = time.time()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     config.load_dotenv()
-    config.refresh_llm()
+    config.apply_env()
+    settings.load()
+    config.migrate_storage()
     db.init_db()
     yield
 
@@ -37,6 +39,7 @@ app.add_middleware(
 
 app.include_router(ingest.router)
 app.include_router(sources.router)
+app.include_router(settings_router.router)
 
 
 @app.get("/api/health")

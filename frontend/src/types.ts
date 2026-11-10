@@ -61,3 +61,49 @@ export interface DedupeOut {
   exists: boolean
   video: VideoOut | null
 }
+
+export type DocMode = 'auto' | 'extractive' | 'llm'
+
+export interface LLMSettings {
+  available: boolean
+  api_key_set: boolean
+  api_key_hint: string
+  base_url: string
+  model: string
+  vision_model: string
+  doc_mode: DocMode
+}
+
+export interface SettingsDefaults {
+  output_dir: string
+  base_url: string
+  model: string
+  doc_mode: DocMode
+}
+
+export interface SettingsOut {
+  llm: LLMSettings
+  output_dir: string
+  defaults: SettingsDefaults
+  settings_file: string
+}
+
+export interface LLMSettingsUpdate {
+  api_key?: string | null
+  base_url?: string
+  model?: string
+  vision_model?: string
+  doc_mode?: DocMode
+}
+
+export interface SettingsUpdate {
+  llm?: LLMSettingsUpdate
+  output_dir?: string
+}
+
+export interface TestLLMOut {
+  ok: boolean
+  message: string
+  model: string
+  latency_ms: number
+}

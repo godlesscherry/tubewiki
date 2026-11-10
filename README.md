@@ -42,15 +42,25 @@ Paste up to 10 YouTube URLs, press **Extract documents**, then open
 `vault/` — one markdown file per video with an overview, chapters, inline
 slide frames, quotes and takeaways.
 
-Optional LLM (rewrites the transcript into polished article prose instead of the
-offline extractive document):
+Configure everything from the **Settings** page in the header:
 
-```bash
-cp .env.example .env   # add OPENAI_API_KEY / OPENAI_BASE_URL / OPENAI_MODEL
+- **LLM** — API key, base URL, model, vision model, document mode
+  (`auto` / `extractive` / `llm`), with a **Test connection** button.
+- **Output** — the folder where documents and images are written (created if
+  missing; defaults to `vault/`).
+
+Settings are stored locally in `settings.json` (git-ignored, mode `0600`, the raw
+key is never returned by the API) and applied immediately.
+
+Works with OpenAI or any OpenAI-compatible server. For local Ollama:
+
+```
+Base URL: http://localhost:11434/v1
+Model:    llama3.1:8b
+API key:  ollama            (any non-empty string)
 ```
 
-Works with local models too: point `OPENAI_BASE_URL` at Ollama
-(`http://localhost:11434/v1`) and set `TUBEWIKI_LLM_MODEL=llama3.1:8b`.
+> `.env` / environment variables still work; `settings.json` wins when present.
 
 ## Commands
 
@@ -83,20 +93,22 @@ offline extractive (default, no key) or LLM-written sections.
 | --- | --- | --- |
 | API | **FastAPI + Pydantic v2 + Uvicorn** (Python 3.12) | async background jobs, typed contracts |
 | Metadata | **SQLite (WAL)** | videos + jobs only; derived, deletable |
-| Content | **Markdown + frontmatter** in `vault/` | source of truth, readable, git-able |
+| Content | **Markdown + frontmatter** in `vault/` (configurable) | source of truth, readable, git-able |
+| Settings | **settings.json** (git-ignored, 0600) | local-first config, applied live |
 | Extraction | **yt-dlp** (metadata/captions), **ffmpeg** (scene frames), **Pillow** (aHash dedupe) | local, free, battle-tested |
 | LLM (optional) | any **OpenAI-compatible** endpoint via httpx | document rewrite + vision captions |
 | UI | **React 19 + TypeScript + Vite**, hand-rolled CSS | minimal single-page dashboard |
 
 ## API
 
-8 endpoints, all under `/api`:
+11 endpoints, all under `/api`:
 
 - `POST /api/ingest` `{urls[], force?}` → `{job_id, accepted, duplicates, rejected}`
 - `GET /api/jobs`, `GET /api/jobs/{id}`
 - `GET /api/sources?q=&status=`, `GET /api/sources/check?url=`,
   `DELETE /api/sources/{video_id}`
 - `GET /api/config`, `GET /api/health`
+- `GET /api/settings`, `PUT /api/settings`, `POST /api/settings/test-llm`
 
 OpenAPI docs at `http://127.0.0.1:8787/docs`; full contract in
 [`docs/API.md`](docs/API.md).
@@ -123,6 +135,8 @@ start the server again to rebuild it.
   disk (the documents are yours).
 - Use `q` on the History view to filter the list — it is table filtering, not a
   document search feature.
+- Changing the output directory only redirects future extractions; your history
+  stays in the app-level database, and existing documents stay where they are.
 
 ## Roadmap
 

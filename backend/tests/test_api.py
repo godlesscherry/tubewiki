@@ -9,12 +9,25 @@ from pathlib import Path
 import pytest
 
 TMP_WIKI = Path(tempfile.mkdtemp(prefix="tubewiki-test-wiki-"))
+TMP_DATA = Path(tempfile.mkdtemp(prefix="tubewiki-test-data-"))
 os.environ["TUBEWIKI_WIKI"] = str(TMP_WIKI)
+os.environ["TUBEWIKI_DATA"] = str(TMP_DATA)
+os.environ["TUBEWIKI_DB"] = str(TMP_DATA / "tubewiki.db")
+os.environ["TUBEWIKI_SETTINGS"] = str(TMP_DATA / "settings.json")
 os.environ.pop("OPENAI_API_KEY", None)
 
 from fastapi.testclient import TestClient  # noqa: E402
 
 from backend.app import config, db  # noqa: E402
+
+# Pin every path explicitly, independent of import order.
+config.WIKI_DIR = TMP_WIKI
+config.ASSETS_DIR = TMP_WIKI / "assets"
+config.DATA_DIR = TMP_DATA
+config.DB_PATH = TMP_DATA / "tubewiki.db"
+config.TMP_DIR = TMP_DATA / "tmp"
+config.SETTINGS_FILE = TMP_DATA / "settings.json"
+
 from backend.app.main import app  # noqa: E402
 from backend.app.routers.ingest import parse_youtube_id  # noqa: E402
 
@@ -26,6 +39,7 @@ def client():
     with TestClient(app) as test_client:
         yield test_client
     shutil.rmtree(TMP_WIKI, ignore_errors=True)
+    shutil.rmtree(TMP_DATA, ignore_errors=True)
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import base64
 import mimetypes
-import os
+import time
 from pathlib import Path
 from typing import Any
 
@@ -13,8 +13,6 @@ from . import config
 
 
 def available() -> bool:
-    if os.environ.get("OPENAI_API_KEY") or os.environ.get("TUBEWIKI_LLM_API_KEY"):
-        config.refresh_llm()
     return bool(config.LLM_API_KEY)
 
 
@@ -23,6 +21,27 @@ def _headers() -> dict[str, str]:
         "Authorization": f"Bearer {config.LLM_API_KEY}",
         "Content-Type": "application/json",
     }
+
+
+async def probe() -> tuple[bool, str, int]:
+    """Check that the configured endpoint responds. Returns (ok, message, latency_ms)."""
+    if not available():
+        return False, "No API key configured.", 0
+    started = time.monotonic()
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(20.0, connect=8.0)) as client:
+            response = await client.get(f"{config.LLM_BASE_URL}/models", headers=_headers())
+        latency = int((time.monotonic() - started) * 1000)
+        if response.status_code < 400:
+            return True, f"Connected to {config.LLM_BASE_URL} ({config.LLM_MODEL})", latency
+        if response.status_code in (401, 403):
+            return False, f"Authentication failed (HTTP {response.status_code}). Check the API key.", latency
+        if response.status_code == 404:
+            return True, f"Endpoint reachable at {config.LLM_BASE_URL} (no /models route; chat may still work).", latency
+        return False, f"Endpoint responded with HTTP {response.status_code}.", latency
+    except httpx.HTTPError as exc:
+        latency = int((time.monotonic() - started) * 1000)
+        return False, f"Could not reach {config.LLM_BASE_URL}: {exc}", latency
 
 
 async def chat(

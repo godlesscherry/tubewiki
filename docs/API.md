@@ -17,13 +17,15 @@ served by FastAPI from `frontend/dist` in production).
 tubewiki/
 ├── backend/app/
 │   ├── main.py            app, SPA serving
-│   ├── config.py          paths, env, LLM settings
+│   ├── config.py          paths, env, runtime settings
+│   ├── settings.py        settings.json load/save/mask/validate
 │   ├── db.py              SQLite: videos + jobs only
 │   ├── schemas.py         pydantic models
 │   ├── llm.py             optional OpenAI-compatible client
 │   ├── routers/
 │   │   ├── ingest.py      POST /api/ingest, jobs
-│   │   └── sources.py     history, dedupe, delete
+│   │   ├── sources.py     history, dedupe, delete
+│   │   └── settings.py    GET/PUT settings, test LLM
 │   └── ingest/
 │       ├── pipeline.py    run_ingest_job(job_id, urls)
 │       ├── youtube.py     metadata, captions
@@ -31,10 +33,11 @@ tubewiki/
 │       ├── document.py    detailed document builder
 │       └── writer.py      page writer → WIKI_DIR/<slug>.md
 ├── frontend/src/          React UI
-├── vault/            flat document folder (source of truth)
+├── vault/                 flat document folder (source of truth, configurable)
 │   ├── <slug>.md
-│   ├── assets/<video_id>/*.jpg
-│   └── .tubewiki/tubewiki.db    derived metadata (deletable)
+│   └── assets/<video_id>/*.jpg
+├── data/tubewiki.db       derived metadata: videos + jobs (deletable)
+├── settings.json          optional runtime settings (git-ignored, 0600)
 └── docs/API.md
 ```
 
@@ -60,6 +63,42 @@ tubewiki/
     status, error, added, extracted`
 - `GET /api/sources/check?url=` → `{exists: bool, video: VideoOut | null}`
 - `DELETE /api/sources/{video_id}` → `{deleted: true}` (DB row only; markdown file is left on disk)
+
+### Settings
+- `GET /api/settings` → safe settings view (never returns the raw API key):
+  ```json
+  {
+    "llm": {
+      "available": true, "api_key_set": true, "api_key_hint": "••••1234",
+      "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini",
+      "vision_model": "gpt-4o-mini", "doc_mode": "auto"
+    },
+    "output_dir": "/abs/path/to/vault",
+    "defaults": {"output_dir": "...", "base_url": "...", "model": "...", "doc_mode": "auto"},
+    "settings_file": "/abs/path/to/settings.json"
+  }
+  ```
+- `PUT /api/settings` — partial update, persisted to `settings.json` (mode 0600) and applied live:
+  ```json
+  {
+    "llm": {
+      "api_key": "sk-...",        // omit = keep, "" = clear
+      "base_url": "http://localhost:11434/v1",
+      "model": "llama3.1:8b",
+      "vision_model": "",          // empty = use model
+      "doc_mode": "auto"           // auto | extractive | llm
+    },
+    "output_dir": "vault"          // ~/relative/absolute; created if missing
+  }
+  ```
+  Validation: `base_url` must be http(s), `doc_mode` must be a known mode, `output_dir`
+  must be writable and not a file. Returns the same shape as GET.
+- `POST /api/settings/test-llm` → `{ok, message, model, latency_ms}` — pings
+  `{base_url}/models`; works with OpenAI and OpenAI-compatible servers (Ollama,
+  LM Studio, vLLM).
+
+Precedence: `settings.json` → environment/`.env` → defaults. The header shows an
+LLM on/off chip and a **Settings** page links these controls to the API.
 
 ## Output
 

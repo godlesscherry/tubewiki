@@ -67,13 +67,13 @@ def today() -> str:
 
 
 def ensure_dirs() -> None:
-    for path in (config.WIKI_DIR, config.ASSETS_DIR, config.DB_DIR, config.WIKI_DIR / ".tubewiki" / "tmp"):
+    for path in (config.WIKI_DIR, config.ASSETS_DIR, config.DATA_DIR, config.TMP_DIR):
         path.mkdir(parents=True, exist_ok=True)
 
 
 @contextmanager
 def connect() -> Iterator[sqlite3.Connection]:
-    config.DB_DIR.mkdir(parents=True, exist_ok=True)
+    config.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(config.DB_PATH), timeout=30)
     conn.row_factory = sqlite3.Row
     try:
